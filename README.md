@@ -4,6 +4,53 @@
 
 DeepSeek Harness（DSH）Web 界面右下角的常驻余额挂件：小鲸鱼气泡图 + DeepSeek API 余额 + 今日已用 + 每轮对话消耗统计，每次打开界面自动启用。本项目是标准 DSH 插件包，可通过 `dsh plugin` 安装/卸载。
 
+# DSH 小鲸鱼余额挂件（DeepSeek Balance Whale Widget）
+
+![DSH 小鲸鱼余额挂件](assets/DSH2.png)
+
+DeepSeek Harness（DSH）Web 界面右下角的常驻余额挂件：小鲸鱼气泡图 + DeepSeek API 余额 + 今日已用 + 每轮对话消耗统计，每次打开界面自动启用。本项目是标准 DSH 插件包，可通过 `dsh plugin` 安装/卸载。
+
+---
+
+## 🚀 Fork 版 v0.3.0-multi-route：多平台路由感知
+
+> 本 fork（[windy-0-0/DeepSeek-Balance-Whale-Widget](https://github.com/windy-0-0/DeepSeek-Balance-Whale-Widget)）在保留全部原功能之上，把挂件从「只认 DeepSeek 官方」升级为**多平台路由感知**，并与 [dsh-model-router](https://github.com/windy-0-0/dsh-model-router) 共享同一份价格目录。
+
+### 新增能力
+
+| 能力 | 说明 |
+|---|---|
+| 🔎 **API 路径自动检测** | 从会话事件读取每条消息的 `source.provider` + `source.model`，高频刷新（余额轮询 60s→15s，非官方平台缓存仅 3s） |
+| 🎨 **费用数字按平台着色** | DeepSeek 官方=蓝 `#4d6bfe`、基元律动=紫 `#7c5cff`、硅基流动=绿 `#00b96b`，未知平台自动生成 |
+| 🏷 **标签小字说明来源** | 标签显示「基元律动 今日已用」「DeepSeek 官方 余额」，提示行标注「无余额API·本地记账 · glm-5.3」 |
+| 📒 **余额/消耗只显示当前 API** | 切换到哪个平台就只显示哪个平台的余额与今日消耗 |
+| 💾 **无余额 API 平台用本地记账** | tokenrhythm 等平台无公开余额接口 → 按平台价目本地累计（`~/.dsh/.dsh-whale/daily.json`，跨天自动归零） |
+| 🔗 **复用 model-router 目录** | 定价读取 `~/.dsh/.model-router/{models.json,overrides.json}`（无该目录时回退内置 DeepSeek 峰谷表） |
+
+### 定价数据流
+
+```mermaid
+flowchart LR
+    A[会话事件<br/>assistant/message] -->|provider+model+usage| B{路由感知计价}
+    B -->|有 model-router 目录| C[目录平价<br/>tokenrhythm/siliconflow...]
+    B -->|DeepSeek 官方| D[内置峰谷表<br/>工作日 9-12/14-18 峰时]
+    C & D --> E[每轮消耗聚合]
+    E --> F[每轮泡泡·按平台着色]
+    E --> G[今日分平台记账 daily.json]
+    G --> H[balance.json<br/>provider/model/颜色/余额/消耗]
+    H --> I[挂件 UI 实时切换显示]
+```
+
+### 平台配色速查
+
+```mermaid
+graph LR
+    A[deepseek-official<br/>#4d6bfe 蓝] -->|真实余额 API| R1[显示官方余额 + 今日已用]
+    B[tokenrhythm<br/>#7c5cff 紫] -->|本地记账| R2[显示今日已用 + 无余额API 标注]
+    C[siliconflow<br/>#00b96b 绿] -->|本地记账| R3[显示今日已用 + 无余额API 标注]
+```
+
+---
 ## 特性
 
 - 🐋 **常驻自启**：随 DSH Web 界面每次打开自动出现（标准 DSH bundle 插件）
