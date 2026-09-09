@@ -1,7 +1,7 @@
 {
   "name": "dsh-whale-widget",
-  "version": "0.2.10",
-  "description": "DSH Web 界面右下角的 DeepSeek 余额小鲸鱼挂件（含今日已用、峰谷定价、随机台词、音效与每轮消耗统计）",
+  "version": "0.3.0-multi-route",
+  "description": "多平台路由感知版：按当前 API 路径（DeepSeek官方/基元律动/硅基流动...）显示余额与消耗，数字按平台着色+来源小字，非官方平台用本地记账，模型切换高频检测",
   "keywords": [
     "dsh",
     "dsh-plugin",
